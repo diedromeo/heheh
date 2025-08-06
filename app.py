@@ -1,6 +1,7 @@
-from flask import Flask, request, redirect, session, url_for
+from flask import Flask, request, redirect, session, url_for, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
+import os
 
 # Initialize Flask App
 app = Flask(__name__)
@@ -10,6 +11,11 @@ app.config["SECRET_KEY"] = "supersecretkey"
 
 # Initialize SQLAlchemy
 db = SQLAlchemy(app)
+
+# Serve files from the same directory as app.py
+@app.route('/<path:filename>')
+def serve_file(filename):
+    return send_from_directory(os.path.dirname(__file__), filename)
 
 # Database Model
 class User(db.Model):
@@ -27,39 +33,19 @@ with app.app_context():
 # Home Route
 @app.route("/")
 def home():
-    return """
+    return f"""
     <html>
     <head>
         <title>Squid Game - Restricted Zone</title>
         <style>
-            body { 
-                background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('""" + url_for('static', filename='bg.webp') + """') no-repeat center center fixed; 
+            body {{ 
+                background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                            url('{url_for('serve_file', filename='bg.webp')}') no-repeat center center fixed; 
                 background-size: cover; 
                 color: #00FF00; 
                 text-align: center; 
                 font-family: 'Courier New', monospace; 
-            }
-            h1 { 
-                font-size: 36px; 
-                margin-top: 60px; 
-            }
-            p { 
-                font-size: 18px; 
-            }
-            a { 
-                color: #FF0000; 
-                font-size: 20px; 
-                text-decoration: none; 
-                border: 2px solid #FF0000; 
-                padding: 10px 20px; 
-                display: inline-block; 
-                margin-top: 20px; 
-                background: rgba(0, 0, 0, 0.7); 
-            }
-            a:hover { 
-                background: #FF0000; 
-                color: #000; 
-            }
+            }}
         </style>
     </head>
     <body>
@@ -91,67 +77,23 @@ def login():
         <title>Squid Game - Login</title>
         <style>
             body {{ 
-                background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('{url_for('static', filename='bg.webp')}') no-repeat center center fixed; 
+                background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                            url('{url_for('serve_file', filename='bg.webp')}') no-repeat center center fixed; 
                 background-size: cover; 
                 color: #FFFFFF; 
                 text-align: center; 
-                font-family: 'Courier New', monospace; 
-            }}
-            h1 {{ 
-                color: #00FF00; 
-                font-size: 32px; 
-            }}
-            .container {{
-                background: rgba(0, 0, 0, 0.8); 
-                padding: 30px; 
-                border: 2px solid #FF0000; 
-                display: inline-block; 
-                margin-top: 80px; 
-            }}
-            input {{ 
-                padding: 10px; 
-                font-size: 16px; 
-                margin: 10px; 
-                width: 250px; 
-                border: 2px solid #FF0000; 
-                background: #000; 
-                color: #00FF00; 
-                text-align: center; 
-                font-family: 'Courier New', monospace; 
-            }}
-            input[type="submit"] {{ 
-                border: 2px solid #00FF00; 
-                color: #000; 
-                background: #00FF00; 
-                cursor: pointer; 
-                width: 150px; 
-            }}
-            input[type="submit"]:hover {{ 
-                background: #FF0000; 
-                border-color: #FF0000; 
-                color: #FFF; 
-            }}
-            .error {{ 
-                color: #FF0000; 
-                font-size: 16px; 
-                font-weight: bold; 
-            }}
-            .hint {{ 
-                font-size: 12px; 
-                color: #888; 
             }}
         </style>
     </head>
     <body>
-        <div class="container">
+        <div>
             <h1>🔴🟢 SQUID GAME LOGIN 🔴🟢</h1>
-            {"<p class='error'>" + error + "</p>" if error else ""}
+            {"<p style='color:red;'>" + error + "</p>" if error else ""}
             <form method="POST">
                 <input type="text" name="username" placeholder="Username"><br>
                 <input type="password" name="password" placeholder="Password"><br>
                 <input type="submit" value="Login">
             </form>
-            <p class="hint">Hint: The system trusts your input...</p>
         </div>
     </body>
     </html>
@@ -169,53 +111,19 @@ def dashboard():
         <title>Squid Game - Front Man</title>
         <style>
             body {{ 
-                background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('{url_for('static', filename='bg.webp')}') no-repeat center center fixed; 
+                background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                            url('{url_for('serve_file', filename='bg.webp')}') no-repeat center center fixed; 
                 background-size: cover; 
                 color: #00FF00; 
                 text-align: center; 
-                font-family: 'Courier New', monospace; 
-            }}
-            h1 {{ 
-                font-size: 36px; 
-                margin-top: 50px; 
-            }}
-            p {{ 
-                font-size: 20px; 
-            }}
-            .flag {{ 
-                font-size: 18px; 
-                font-weight: bold; 
-                color: #FF0000; 
-                background: rgba(0, 0, 0, 0.8); 
-                padding: 8px; 
-                border: 2px solid #FF0000; 
-            }}
-            img {{
-                margin: 20px 0; 
-                border: 2px solid #FF0000; 
-                max-width: 500px; 
-            }}
-            a {{ 
-                color: #FF0000; 
-                font-size: 20px; 
-                text-decoration: none; 
-                border: 2px solid #FF0000; 
-                padding: 10px 20px; 
-                display: inline-block; 
-                margin-top: 20px; 
-                background: rgba(0, 0, 0, 0.7); 
-            }}
-            a:hover {{ 
-                background: #FF0000; 
-                color: #000; 
             }}
         </style>
     </head>
     <body>
         <h1>🏆 FRONT MAN: {session["user"]}</h1>
         <p>🎭 You’ve taken control!</p>
-        <img src="{url_for('static', filename='gg.gif')}" alt="Squid Game Victory">
-        <p class="flag">🚩 FLAG: CyberX{{$quid_g4me_h4cked}} 🚩</p>
+        <img src="{url_for('serve_file', filename='gg.gif')}" alt="Squid Game Victory">
+        <p>🚩 FLAG: ctf7{{$quid_g4me_h4cked}} 🚩</p>
         <a href='/logout'>[ Logout ]</a>
     </body>
     </html>
