@@ -295,7 +295,7 @@ def dashboard():
         <h1>🏆 FRONT MAN: {session["user"]}</h1>
         <p>🎭 You’ve taken control!</p>
         <img src="{url_for('serve_file', filename='gg.gif')}" alt="Squid Game Victory">
-        <p class="flag">🚩 FLAG: CyberX{{$quid_g4me_h4cked}} 🚩</p>
+        <p class="flag">🚩 FLAG: ctf7{{$quid_g4me_h4cked}} 🚩</p>
         <a href='/logout'>[ Logout ]</a>
     </body>
     </html>
@@ -310,4 +310,5 @@ def logout():
 # Run the App
 if __name__ == "__main__":
     app.run(debug=True)
+
 
